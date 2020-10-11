@@ -21,6 +21,7 @@ class Message {
         this.index = 0;
         this.paddingText = 20;
         this.fontSizeText = 20;
+        this.distanceFactor = 10;
     }
 
     getFontSize() {
@@ -101,17 +102,18 @@ class Group {
         fill(255,0,0);
         circle(0,0,10);
         push();
-        this.renderRecursion(message);
+        this.renderRecursion(message, this.h - this.distanceFactor, this.textFontSize - this.distanceFactor);
         pop();
         push();
-        this.renderRecursionUp(message.parent,message);
+        this.renderRecursionUp(message.parent,message, this.h - this.distanceFactor, this.textFontSize - this.distanceFactor);
         pop();
         fill(185);
         //filter(BLUR, 3);
+        message.fontSizeText = this.textFontSize;
         message.renderMessage();
     }
 
-    renderRecursion(message){
+    renderRecursion(message, lenghtNode, sizeNode){
         let curvature = 10;
         // tint(255,127);
         // scale(1.2);
@@ -123,18 +125,18 @@ class Group {
             push();
             rotate(angle - theta * i);
             stroke(20 + (i*40), 0, 0);
-            strokeWeight(this.textFontSize/10);
+            strokeWeight(sizeNode/10);
 
-            let distance =  computeDistanceEuler((angle - theta * i),this.h);
+            let distance =  computeDistanceEuler((angle - theta * i),lenghtNode);
             line(0, 0, 0, distance);
             translate(0, distance);
             rotate(theta * i - angle);
 
-            this.renderRecursion(message.children[i]);
+            this.renderRecursion(message.children[i], lenghtNode - this.distanceFactor, sizeNode - this.distanceFactor);
 
             pop();
         }
-
+        message.fontSizeText = sizeNode;
         message.renderMessage();
     }
 
@@ -177,37 +179,38 @@ class Group {
     //     }
     // }
 
-    renderRecursionUp(parent, message) {
+    renderRecursionUp(parent, message, lenghtNode, sizeNode) {
         if (parent == null) return;
-        let distance = this.h;
+        let distance = lenghtNode;
         rotate(180);
         stroke(60, 0, 50);
-        strokeWeight(this.textFontSize/10);
+        strokeWeight(sizeNode/10);
         line(0, 0, 0, distance);
         translate(0, distance);
         rotate(180);
         let angle = 160;
         let theta = angle / (message.index-1);
         for (let i = 0; i < parent.index; i++)
-        if (message === parent.children[i]) continue;
-        else{
-            push();
-            rotate(- theta * i);
-            stroke(20 + (i*40), 0, 0);
-            strokeWeight(this.textFontSize/10);
+            if (message === parent.children[i]) continue;
+            else{
+                push();
+                rotate(- theta * i);
+                stroke(20 + (i*40), 0, 0);
+                strokeWeight(sizeNode/10);
 
-            let distance =  computeDistanceEuler((angle - theta * i), this.h);
-            line(0, 0, 0, distance);
-            translate(0, distance);
-            rotate(theta * i);
+                let distance =  computeDistanceEuler((angle - theta * i), lenghtNode);
+                line(0, 0, 0, distance);
+                translate(0, distance);
+                rotate(theta * i);
 
-            this.renderRecursion(parent.children[i]);
+                this.renderRecursion(parent.children[i], lenghtNode - this.distanceFactor, sizeNode - this.distanceFactor);
 
-            pop();
-        }
+                pop();
+            }
         push();
-        this.renderRecursionUp(parent.parent, parent);
+        this.renderRecursionUp(parent.parent, parent, lenghtNode - this.distanceFactor, sizeNode - this.distanceFactor);
         pop();
+        parent.fontSizeText = sizeNode;
         parent.renderMessage();
     }
 }
@@ -215,11 +218,11 @@ class Group {
 function setup() {
     createCanvas(windowWidth, windowHeight);
     frameRate(30);
-    spaceSlider = createSlider(50, 100, 75);
+    spaceSlider = createSlider(10, 200, 100);
     spaceSlider.position(20, 20);
     sizeSlider = createSlider(0, 60, 40);
     sizeSlider.position(20, 50);
-    childSlider = createSlider(0, 500, 255);
+    childSlider = createSlider(0, 100, 10);
     childSlider.position(20, 80);
     input = createInput();
     input.position(20, 100);
@@ -283,8 +286,7 @@ function draw() {
     messageTree1.renderTree(messageTree1.currentMessage);
     messageTree1.h = spaceSlider.value();
     messageTree1.textFontSize = sizeSlider.value();
-    print(messageTree1.textFontSize);
-    messageTree1.updateAll(messageTree1.root);
+    messageTree1.distanceFactor = childSlider.value();
 }
 
 

@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="879f6478-bfbe-4812-9e31-97fe0ea3dae9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/MessageTree.js" beforeDir="false" afterPath="$PROJECT_DIR$/MessageTree.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sketch.js" beforeDir="false" afterPath="$PROJECT_DIR$/sketch.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +49,7 @@
       <workItem from="1600878255072" duration="3669000" />
       <workItem from="1601981928035" duration="6126000" />
       <workItem from="1602237703382" duration="11117000" />
-      <workItem from="1602440111909" duration="4873000" />
+      <workItem from="1602440111909" duration="5593000" />
     </task>
     <servers />
   </component>
