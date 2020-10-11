@@ -102,10 +102,10 @@ class Group {
         fill(255,0,0);
         circle(0,0,10);
         push();
-        this.renderRecursion(message, this.h - this.distanceFactor, this.textFontSize - this.distanceFactor);
+        this.renderRecursion(message, this.h / this.distanceFactor, this.textFontSize / this.distanceFactor);
         pop();
         push();
-        this.renderRecursionUp(message.parent,message, this.h - this.distanceFactor, this.textFontSize - this.distanceFactor);
+        this.renderRecursionUp(message.parent,message, this.h / this.distanceFactor, this.textFontSize / this.distanceFactor);
         pop();
         fill(185);
         //filter(BLUR, 3);
@@ -114,28 +114,42 @@ class Group {
     }
 
     renderRecursion(message, lenghtNode, sizeNode){
-        let curvature = 10;
-        // tint(255,127);
-        // scale(1.2);
-        // message.renderMessage();
-        //filter(BLUR, 0);
-        let angle = 70;
-        let theta = angle * 2 / (message.index-1);
-        for (let i = 0; i < message.index; i++) {
+        if (message.index == 1){
             push();
-            rotate(angle - theta * i);
-            stroke(20 + (i*40), 0, 0);
+
+            stroke(20 + 40, 0, 0);
             strokeWeight(sizeNode/10);
-
-            let distance =  computeDistanceEuler((angle - theta * i),lenghtNode);
-            line(0, 0, 0, distance);
-            translate(0, distance);
-            rotate(theta * i - angle);
-
-            this.renderRecursion(message.children[i], lenghtNode - this.distanceFactor, sizeNode - this.distanceFactor);
+            line(0, 0, 0, lenghtNode);
+            translate(0, lenghtNode);
+            this.renderRecursion(message.children[0], lenghtNode / this.distanceFactor, sizeNode / this.distanceFactor);
 
             pop();
         }
+        else if (message.index > 1){
+            let curvature = 10;
+            // tint(255,127);
+            // scale(1.2);
+            // message.renderMessage();
+            //filter(BLUR, 0);
+            let angle = 70;
+            let theta = angle * 2 / (message.index-1);
+            for (let i = 0; i < message.index; i++) {
+                push();
+                rotate(angle - theta * i);
+                stroke(20 + (i*40), 0, 0);
+                strokeWeight(sizeNode/10);
+
+                let distance =  computeDistanceEuler((angle - theta * i),lenghtNode);
+                line(0, 0, 0, distance);
+                translate(0, distance);
+                rotate(theta * i - angle);
+
+                this.renderRecursion(message.children[i], lenghtNode / this.distanceFactor, sizeNode / this.distanceFactor);
+
+                pop();
+            }
+        }
+
         message.fontSizeText = sizeNode;
         message.renderMessage();
     }
@@ -194,21 +208,21 @@ class Group {
             if (message === parent.children[i]) continue;
             else{
                 push();
-                rotate(- theta * i);
+                rotate(angle - theta * i);
                 stroke(20 + (i*40), 0, 0);
                 strokeWeight(sizeNode/10);
 
                 let distance =  computeDistanceEuler((angle - theta * i), lenghtNode);
                 line(0, 0, 0, distance);
                 translate(0, distance);
-                rotate(theta * i);
+                rotate(theta * i - angle);
 
-                this.renderRecursion(parent.children[i], lenghtNode - this.distanceFactor, sizeNode - this.distanceFactor);
+                this.renderRecursion(parent.children[i], lenghtNode / this.distanceFactor, sizeNode / this.distanceFactor);
 
                 pop();
             }
         push();
-        this.renderRecursionUp(parent.parent, parent, lenghtNode - this.distanceFactor, sizeNode - this.distanceFactor);
+        this.renderRecursionUp(parent.parent, parent, lenghtNode / this.distanceFactor, sizeNode / this.distanceFactor);
         pop();
         parent.fontSizeText = sizeNode;
         parent.renderMessage();
@@ -222,7 +236,7 @@ function setup() {
     spaceSlider.position(20, 20);
     sizeSlider = createSlider(0, 60, 40);
     sizeSlider.position(20, 50);
-    childSlider = createSlider(0, 100, 10);
+    childSlider = createSlider(1, 10.0, 2.5 );
     childSlider.position(20, 80);
     input = createInput();
     input.position(20, 100);
